@@ -15,4 +15,4 @@ COPY ./src ./src
 RUN yarn && yarn && yarn cache clean
 
 # Runs the dev npm script to build & start the server
-CMD yarn dev
+CMD ls && yarn dev

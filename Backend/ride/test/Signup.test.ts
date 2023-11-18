@@ -1,10 +1,10 @@
+import sinon from 'sinon';
 import AccountDAO from '../src/AccountDAO';
 import AccountDAODatabase from '../src/AccountDAODatabase';
 import GetAccount from '../src/GetAccount';
 import Logger from '../src/Logger';
 import LoggerConsole from '../src/LoggerConsole';
 import Signup from '../src/Signup';
-import sinon from 'sinon';
 
 let signup: Signup;
 let getAccount: GetAccount;

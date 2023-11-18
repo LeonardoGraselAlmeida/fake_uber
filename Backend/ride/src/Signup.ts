@@ -1,11 +1,13 @@
 import crypto from 'crypto';
-import AccountDAO from './AccountDAO';
 import { validateCpf } from './CpfValidator';
 import Logger from './Logger';
 import SignupAccountDAO from './SignupAccountDAO';
 
 export default class Signup {
-  constructor(private accountDAO: SignupAccountDAO, private logger: Logger) {}
+  constructor(
+    private accountDAO: SignupAccountDAO,
+    private logger: Logger
+  ) {}
 
   async execute(input: any) {
     this.logger.log(`signup ${input.name}`);

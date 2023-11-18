@@ -1,7 +1,6 @@
 module.exports = {
-    semi: true,
-    singleQuote: false,
-    trailingComma: 'none',
-    arrowParens: 'avoid'
-  }
-  
+  semi: true,
+  singleQuote: true,
+  trailingComma: "none",
+  arrowParens: "avoid"
+};

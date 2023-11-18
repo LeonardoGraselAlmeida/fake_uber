@@ -3,7 +3,10 @@ import Logger from './Logger';
 import RideDAO from './RideDAO';
 
 export default class RequestRide {
-  constructor(private rideDAO: RideDAO, private logger: Logger) {}
+  constructor(
+    private rideDAO: RideDAO,
+    private logger: Logger
+  ) {}
 
   async execute(input: any) {
     this.logger.log(`requestRide`);

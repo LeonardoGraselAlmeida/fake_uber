@@ -1,5 +1,5 @@
 import pgp from 'pg-promise';
-import RideDAO from './RideDAO';
+import type RideDAO from './RideDAO';
 
 export default class RideDAODatabase implements RideDAO {
   async save(ride: any) {

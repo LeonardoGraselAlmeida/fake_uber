@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { validateCpf } from './CpfValidator';
-import Logger from './Logger';
-import SignupAccountDAO from './SignupAccountDAO';
+import type Logger from './Logger';
+import type SignupAccountDAO from './SignupAccountDAO';
 
 export default class Signup {
   constructor(

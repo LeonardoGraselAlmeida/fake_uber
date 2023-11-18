@@ -1,7 +1,7 @@
 import pgp from 'pg-promise';
-import AccountDAO from './AccountDAO';
-import GetAccountAccountDAO from './GetAccountAccountDAO';
-import SignupAccountDAO from './SignupAccountDAO';
+import type AccountDAO from './AccountDAO';
+import type GetAccountAccountDAO from './GetAccountAccountDAO';
+import type SignupAccountDAO from './SignupAccountDAO';
 
 export default class AccountDAODatabase
   implements AccountDAO, SignupAccountDAO, GetAccountAccountDAO

@@ -1,4 +1,4 @@
-import GetAccountAccountDAO from './GetAccountAccountDAO';
+import type GetAccountAccountDAO from './GetAccountAccountDAO';
 
 export default class GetAccount {
   constructor(private accountDAO: GetAccountAccountDAO) {}

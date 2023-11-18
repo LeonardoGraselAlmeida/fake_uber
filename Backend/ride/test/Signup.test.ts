@@ -1,8 +1,8 @@
 import sinon from 'sinon';
-import AccountDAO from '../src/AccountDAO';
+import type AccountDAO from '../src/AccountDAO';
 import AccountDAODatabase from '../src/AccountDAODatabase';
 import GetAccount from '../src/GetAccount';
-import Logger from '../src/Logger';
+import type Logger from '../src/Logger';
 import LoggerConsole from '../src/LoggerConsole';
 import Signup from '../src/Signup';
 

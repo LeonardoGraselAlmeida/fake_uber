@@ -1,5 +1,5 @@
-import Logger from './Logger';
-import RideDAO from './RideDAO';
+import type Logger from './Logger';
+import type RideDAO from './RideDAO';
 
 export default class GetRide {
   constructor(

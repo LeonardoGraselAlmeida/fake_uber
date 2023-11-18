@@ -1,4 +1,4 @@
-import Logger from './Logger';
+import type Logger from './Logger';
 
 export default class LoggerConsole implements Logger {
   log(message: string) {

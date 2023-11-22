@@ -12,7 +12,18 @@ export default class MainController {
     httpServer.register(
       'post',
       '/signup',
-      async function (params: any, body: any) {
+      async function (
+        params: unknown,
+        body: {
+          name: string;
+          email: string;
+          cpf: string;
+          carPlate?: string;
+          isPassenger?: boolean;
+          isDriver?: boolean;
+          password: string;
+        }
+      ) {
         const output = await signup.execute(body);
         return output;
       }
@@ -21,7 +32,7 @@ export default class MainController {
     httpServer.register(
       'get',
       '/accounts/:accountId',
-      async function (params: any, body: any) {
+      async function (params: { accountId: string }, body: unknown) {
         const output = await getAccount.execute(params.accountId);
         return output;
       }

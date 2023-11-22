@@ -8,7 +8,7 @@ export default class Signup {
     private logger: Logger
   ) {}
 
-  async execute(input: Input): Promise<Output> {
+  async execute(input: SignupInput): Promise<SignupOutput> {
     this.logger.log(`signup ${input.name}`);
     const existingAccount = await this.accountRepository.getByEmail(
       input.email
@@ -29,7 +29,7 @@ export default class Signup {
   }
 }
 
-export type Input = {
+export type SignupInput = {
   name: string;
   email: string;
   cpf: string;
@@ -39,6 +39,6 @@ export type Input = {
   password: string;
 };
 
-type Output = {
+type SignupOutput = {
   accountId: string;
 };

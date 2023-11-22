@@ -204,16 +204,18 @@ test('Deve criar uma conta para o passageiro com fake', async function () {
     isPassenger: true,
     password: '123456'
   };
-  const accounts: any = [];
+  const accounts: Account[] = [];
   const accountDAO: AccountDAO = {
-    async save(account: any): Promise<void> {
+    async save(account: Account): Promise<void> {
       accounts.push(account);
     },
-    async getById(accountId: string): Promise<any> {
-      return accounts.find((account: any) => account.accountId === accountId);
+    async getById(accountId: string): Promise<Account | undefined> {
+      return accounts.find(
+        (account: Account) => account.accountId === accountId
+      );
     },
-    async getByEmail(email: string): Promise<any> {
-      return accounts.find((account: any) => account.email === email);
+    async getByEmail(email: string): Promise<Account | undefined> {
+      return accounts.find((account: Account) => account.email === email);
     }
   };
   const logger: Logger = {

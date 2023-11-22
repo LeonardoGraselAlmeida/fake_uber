@@ -7,7 +7,7 @@ export default class AcceptRide {
     private accountDAO: AccountDAO
   ) {}
 
-  async execute(input: any) {
+  async execute(input: AcceptRideInput): Promise<void> {
     const account = await this.accountDAO.getById(input.driverId);
     if (account && !account.isDriver)
       throw new Error('Only drivers can accept a ride');
@@ -17,3 +17,8 @@ export default class AcceptRide {
     await this.rideDAO.update(ride);
   }
 }
+
+export type AcceptRideInput = {
+  driverId: string;
+  rideId: string;
+};

@@ -1,4 +1,4 @@
-drop schema cccat14 cascade;
+drop schema IF EXISTS cccat14 cascade;
 
 create schema cccat14;
 

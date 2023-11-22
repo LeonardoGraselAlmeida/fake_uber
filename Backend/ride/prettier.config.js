@@ -1,8 +1,7 @@
-const config = {
+module.exports  = {
   semi: true,
   singleQuote: true,
   trailingComma: 'none',
   arrowParens: 'avoid'
 };
 
-export default config;

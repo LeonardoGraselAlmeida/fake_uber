@@ -4,8 +4,42 @@
 # Coverage directory used by tools like istanbul
 **/coverage
 
-# MacOS
-**/.DS_Store
+# Arquivos compilados do Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
-# Env
-**/.env*
+# Arquivos binários
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.ico
+
+# Arquivos de configuração
+*.env
+*.env.*
+*.log
+*.out
+*.yaml
+*.yml
+
+# Pasta de dependências e arquivos de build
+/bin/
+/pkg/
+/vendor/
+/vendor/*
+/Godeps/
+
+# Arquivos de cache
+/.cache/
+/.vscode/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?

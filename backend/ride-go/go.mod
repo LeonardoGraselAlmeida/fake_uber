@@ -1,4 +1,4 @@
-module github.com/leonardograselalmeida/Fake_Uber
+module github.com/leonardograselalmeida/fake_uber
 
 go 1.21.4
 

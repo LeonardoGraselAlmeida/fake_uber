@@ -15,10 +15,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - run: cd backend/ride-express
     - uses: actions/setup-node@v3
       with:
         node-version: '20'
         cache: 'yarn'
+        cache-dependency-path: backend/ride-express/yarn.lock
+    - run: cd backend/ride-express
     - run: yarn
     - run: yarn dev && yarn test

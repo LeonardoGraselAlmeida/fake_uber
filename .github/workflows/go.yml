@@ -16,11 +16,8 @@ jobs:
       with:
         go-version: '1.20'
       
-    - name: Access Path 
-      run: cd ./backend/ride-go
-      
     - name: Build
-      run: go build -v ./...
+      run: cd ./backend/ride-go && go build -v ./...
 
     - name: Test
-      run: go test -v ./...
+      run: cd ./backend/ride-go && go test -v ./...

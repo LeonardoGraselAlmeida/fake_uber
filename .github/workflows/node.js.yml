@@ -20,6 +20,6 @@ jobs:
         node-version: '20'
         cache: 'yarn'
         cache-dependency-path: backend/ride-express/yarn.lock
-    - run: cd backend/ride-express |
+    - run: cd ./backend/ride-express |
             yarn |
             yarn dev && yarn test

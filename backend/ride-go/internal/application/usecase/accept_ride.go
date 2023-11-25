@@ -1,9 +1,14 @@
 package usecase
 
-import "github.com/leonardograselalmeida/fake_uber/internal/application/repository"
+import (
+	"errors"
+
+	"github.com/leonardograselalmeida/fake_uber/internal/application/repository"
+)
 
 type AcceptRide struct {
-	AccountDAO repository.AccountRepositoryInterface
+	AccountRepository repository.AccountRepositoryInterface
+	RideRepository    repository.RideRepositoryInterface
 }
 
 type AcceptRideInput struct {
@@ -11,14 +16,29 @@ type AcceptRideInput struct {
 	RideId   string
 }
 
-func (a *AcceptRide) Execute(input AcceptRideInput) {
-	// const account = await this.accountDAO.getById(input.driverId);
-	// if (account && !account.isDriver)
-	//
-	//	throw new Error('Only drivers can accept a ride');
-	//
-	// const ride = await this.rideDAO.getById(input.rideId);
-	// if (!ride) throw new Error('Ride not found');
-	// ride.accept(input.driverId);
-	// await this.rideDAO.update(ride);
+func (a *AcceptRide) Execute(input AcceptRideInput) error {
+	account, accountError := a.AccountRepository.GetAccountById(input.DriverId)
+
+	if accountError != nil {
+		return accountError
+	}
+
+	if !account.IsDriver {
+		return errors.New("only drivers can accept a ride")
+	}
+
+	ride, rideError := a.RideRepository.GetRideById(input.RideId)
+
+	if rideError != nil {
+		return rideError
+	}
+
+	if ride == nil {
+		return errors.New("ride not found")
+	}
+
+	ride.Accept(input.DriverId)
+	a.RideRepository.UpdateRide(ride)
+
+	return nil
 }

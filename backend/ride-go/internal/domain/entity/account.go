@@ -5,6 +5,7 @@ import (
 	"regexp"
 
 	"github.com/google/uuid"
+	"github.com/leonardograselalmeida/fake_uber/internal/domain"
 )
 
 type Account struct {
@@ -28,7 +29,7 @@ func newAccount(accountId string, name string, email string, cpf string, carPlat
 		return nil, err
 	}
 
-	if !ValidateCpf(cpf) {
+	if !domain.ValidateCpf(cpf) {
 		err := errors.New("invalid cpf")
 		return nil, err
 	}

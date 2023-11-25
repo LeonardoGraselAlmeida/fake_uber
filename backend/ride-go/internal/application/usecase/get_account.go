@@ -9,12 +9,12 @@ type GetAccount struct {
 	AccountRepository repository.AccountRepositoryInterface
 }
 
-func (g *GetAccount) Execute(accountId string) *entity.Account {
+func (g *GetAccount) Execute(accountId string) (*entity.Account, error) {
 	account, err := g.AccountRepository.GetAccountById(accountId)
 
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	return account
+	return account, nil
 }

@@ -16,7 +16,11 @@ func main() {
 
 	getAccount := usecase.GetAccount{AccountRepository: &accountRepository}
 
-	account := getAccount.Execute("5ff30d7d-eb76-4d65-96ca-ae94221139f6")
+	account, err := getAccount.Execute("5ff30d7d-eb76-4d65-96ca-ae94221139f6")
+
+	if err != nil {
+		println("Error: %s", err)
+	}
 
 	println("Account: ", account.AccountId, account.Name, account.Email, account.Cpf, account.CarPlate, account.IsPassenger, account.IsDriver)
 }

@@ -1,46 +1,58 @@
 package usecase
 
-// import Account from '../../domain/Account';
-// import type Logger from '../logger/Logger';
-// import type AccountRepository from '../repository/AccountRepository';
+import (
+	"errors"
+	"fmt"
 
-// export default class Signup {
-//   constructor(
-//     private accountRepository: AccountRepository,
-//     private logger: Logger
-//   ) {}
+	"github.com/leonardograselalmeida/fake_uber/internal/application/logger"
+	"github.com/leonardograselalmeida/fake_uber/internal/application/repository"
+	"github.com/leonardograselalmeida/fake_uber/internal/domain/entity"
+)
 
-//   async execute(input: SignupInput): Promise<SignupOutput> {
-//     this.logger.log(`signup ${input.name}`);
-//     const existingAccount = await this.accountRepository.getByEmail(
-//       input.email
-//     );
-//     if (existingAccount) throw new Error('Duplicated account');
-//     const account = Account.create(
-//       input.name,
-//       input.email,
-//       input.cpf,
-//       input.carPlate || '',
-//       !!input.isPassenger,
-//       !!input.isDriver
-//     );
-//     await this.accountRepository.save(account);
-//     return {
-//       accountId: account.accountId
-//     };
-//   }
-// }
+type Signup struct {
+	AccountRepository repository.AccountRepositoryInterface
+	Logger            logger.LoggerInterface
+}
 
-// export type SignupInput = {
-//   name: string;
-//   email: string;
-//   cpf: string;
-//   carPlate?: string;
-//   isPassenger?: boolean;
-//   isDriver?: boolean;
-//   password: string;
-// };
+type SignupInput struct {
+	Name        string
+	Email       string
+	Cpf         string
+	CarPlate    string
+	IsPassenger bool
+	IsDriver    bool
+	Password    string
+}
 
-// type SignupOutput = {
-//   accountId: string;
-// };
+type SignupOutput struct {
+	AccountId string
+}
+
+func (s *Signup) Execute(input SignupInput) (*SignupOutput, error) {
+	messageLog := fmt.Sprintf("signup %s", input.Name)
+	s.Logger.Log(messageLog)
+	existingAccount, existingAccountError := s.AccountRepository.GetAccountByEmail(input.Email)
+
+	if existingAccountError != nil {
+		return nil, existingAccountError
+	}
+
+	if existingAccount != nil {
+		return nil, errors.New("duplicated account")
+	}
+
+	account, accountError := entity.CreateAccount(input.Name, input.Email, input.Cpf, input.CarPlate, input.IsPassenger, input.IsDriver)
+
+	if accountError != nil {
+		return nil, accountError
+	}
+
+	s.AccountRepository.SaveAccount(account)
+
+	output := SignupOutput{
+		AccountId: account.AccountId,
+	}
+
+	return &output, nil
+
+}

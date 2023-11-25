@@ -1,30 +1,42 @@
 package usecase
 
-// import type Logger from '../logger/Logger';
-// import type RideDAO from '../repository/RideRepository';
+import (
+	"errors"
 
-// export default class GetRide {
-//   constructor(
-//     private rideDAO: RideDAO,
-//     private logger: Logger
-//   ) {}
+	"github.com/leonardograselalmeida/fake_uber/internal/application/logger"
+	"github.com/leonardograselalmeida/fake_uber/internal/application/repository"
+)
 
-//   async execute(rideId: string): Promise<Output> {
-//     this.logger.log(`getRide`);
-//     const ride = await this.rideDAO.getById(rideId);
-//     if (!ride) throw new Error('Ride not found');
-//     return {
-//       rideId: ride.rideId,
-//       status: ride.getStatus(),
-//       driverId: ride.getDriverId(),
-//       passengerId: ride.passengerId
-//     };
-//   }
-// }
+type GetRide struct {
+	RideRepository repository.RideRepositoryInterface
+	Logger         logger.LoggerInterface
+}
 
-// type Output = {
-//   rideId: string;
-//   status: string;
-//   driverId: string;
-//   passengerId: string;
-// };
+type GetRideOutput struct {
+	RideId      string
+	Status      string
+	DriverId    string
+	PassengerId string
+}
+
+func (g *GetRide) Execute(rideId string) (*GetRideOutput, error) {
+	g.Logger.Log("getRide")
+	ride, rideError := g.RideRepository.GetRideById(rideId)
+
+	if rideError != nil {
+		return nil, rideError
+	}
+
+	if ride == nil {
+		return nil, errors.New("ride not found")
+	}
+
+	output := GetRideOutput{
+		RideId:      ride.RideId,
+		Status:      ride.GetStatus(),
+		DriverId:    ride.GetDriverId(),
+		PassengerId: ride.PassengerId,
+	}
+
+	return &output, nil
+}

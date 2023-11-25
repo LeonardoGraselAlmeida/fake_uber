@@ -1,9 +1,10 @@
-package domain
+package entity_test
 
 import (
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/leonardograselalmeida/fake_uber/internal/domain/entity"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,9 +15,9 @@ func Test_Create_Ride_Valid(t *testing.T) {
 	expectToLat := 20.000
 	expectToLong := -20.000
 	expectDriverId := ""
-	expectStatus := StatusRequested
+	expectStatus := entity.StatusRequested
 
-	ride := CreateRide(expectPassengerId, expectFromLat, expectFromLong, expectToLat, expectToLong)
+	ride := entity.CreateRide(expectPassengerId, expectFromLat, expectFromLong, expectToLat, expectToLong)
 
 	assert.NotNil(t, ride.RideId)
 	assert.NotNil(t, ride.Date)
@@ -37,9 +38,9 @@ func Test_Ride_When_Call_Accept_Should_Set_DriverId_Change_Status(t *testing.T) 
 	expectToLat := 20.000
 	expectToLong := -20.000
 	expectDriverId := uuid.New().String()
-	expectStatus := StatusAccept
+	expectStatus := entity.StatusAccept
 
-	ride := CreateRide(expectPassengerId, expectFromLat, expectFromLong, expectToLat, expectToLong)
+	ride := entity.CreateRide(expectPassengerId, expectFromLat, expectFromLong, expectToLat, expectToLong)
 	ride.Accept(expectDriverId)
 
 	assert.Equal(t, ride.GetDriverId(), expectDriverId)
@@ -52,9 +53,9 @@ func Test_Ride_When_Call_Start_Should_Status(t *testing.T) {
 	expectFromLong := -10.000
 	expectToLat := 20.000
 	expectToLong := -20.000
-	expectStatus := StatusInProgres
+	expectStatus := entity.StatusInProgres
 
-	ride := CreateRide(expectPassengerId, expectFromLat, expectFromLong, expectToLat, expectToLong)
+	ride := entity.CreateRide(expectPassengerId, expectFromLat, expectFromLong, expectToLat, expectToLong)
 	ride.Start()
 
 	assert.Equal(t, ride.GetStatus(), expectStatus)

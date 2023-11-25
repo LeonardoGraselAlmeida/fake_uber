@@ -33,8 +33,8 @@ func (g *GetRide) Execute(rideId string) (*GetRideOutput, error) {
 
 	output := GetRideOutput{
 		RideId:      ride.RideId,
-		Status:      ride.GetStatus(),
-		DriverId:    ride.GetDriverId(),
+		Status:      ride.Status,
+		DriverId:    ride.DriverId,
 		PassengerId: ride.PassengerId,
 	}
 

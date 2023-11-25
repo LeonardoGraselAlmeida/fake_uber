@@ -26,7 +26,6 @@ func (repository *AccountRepository) GetAccountById(accountId string) (*entity.A
 	row := repository.Db.QueryRow("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where account_id = $1", accountId)
 
 	if err := row.Scan(&result.AccountId, &result.Name, &result.Email, &result.Cpf, &result.CarPlate, &result.IsPassenger, &result.IsDriver); err != nil {
-		println(err.Error())
 		return nil, err
 	}
 
@@ -44,7 +43,6 @@ func (repository *AccountRepository) GetAccountByEmail(email string) (*entity.Ac
 	row := repository.Db.QueryRow("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where email = $1", email)
 
 	if err := row.Scan(&result.AccountId, &result.Name, &result.Email, &result.Cpf, &result.CarPlate, &result.IsPassenger, &result.IsDriver); err != nil {
-		println(err.Error())
 		return nil, err
 	}
 

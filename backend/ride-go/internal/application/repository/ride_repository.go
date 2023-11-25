@@ -6,6 +6,6 @@ type RideRepositoryInterface interface {
 	SaveRide(ride *entity.Ride) error
 	UpdateRide(ride *entity.Ride) error
 	GetRideById(rideId string) (*entity.Ride, error)
-	GetActiveRideByPassengerId(passagerId string) (*entity.Ride, error)
+	GetActiveRideByPassengerId(passengerId string) (*entity.Ride, error)
 	GetAllRide() ([]*entity.Ride, error)
 }

@@ -15,8 +15,8 @@ const (
 type Ride struct {
 	RideId      string
 	PassengerId string
-	driverId    string
-	status      string
+	DriverId    string
+	Status      string
 	Date        time.Time
 	FromLat     float64
 	FromLong    float64
@@ -28,8 +28,8 @@ func newRide(rideId string, passengerId string, driverId string, status string, 
 	ride := Ride{
 		RideId:      rideId,
 		PassengerId: passengerId,
-		driverId:    driverId,
-		status:      status,
+		DriverId:    driverId,
+		Status:      status,
 		Date:        date,
 		FromLat:     fromLat,
 		FromLong:    fromLong,
@@ -49,19 +49,16 @@ func CreateRide(passengerId string, fromLat float64, fromLong float64, toLat flo
 	return ride
 }
 
+func RestoreRide(rideId string, passengerId string, driverId string, status string, date time.Time, fromLat float64, fromLong float64, toLat float64, toLong float64) *Ride {
+	ride := newRide(rideId, passengerId, driverId, status, date, fromLat, fromLong, toLat, toLong)
+	return ride
+}
+
 func (ride *Ride) Accept(driverId string) {
-	ride.driverId = driverId
-	ride.status = StatusAccept
+	ride.DriverId = driverId
+	ride.Status = StatusAccept
 }
 
 func (ride *Ride) Start() {
-	ride.status = StatusInProgres
-}
-
-func (ride *Ride) GetStatus() string {
-	return ride.status
-}
-
-func (ride *Ride) GetDriverId() string {
-	return ride.driverId
+	ride.Status = StatusInProgres
 }

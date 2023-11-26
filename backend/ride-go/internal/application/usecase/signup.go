@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/leonardograselalmeida/fake_uber/internal/application/logger"
 	"github.com/leonardograselalmeida/fake_uber/internal/application/repository"
 	"github.com/leonardograselalmeida/fake_uber/internal/domain/entity"
@@ -25,12 +26,13 @@ type SignupInput struct {
 }
 
 type SignupOutput struct {
-	AccountId string
+	AccountId uuid.UUID
 }
 
 func (s *Signup) Execute(input SignupInput) (*SignupOutput, error) {
 	messageLog := fmt.Sprintf("signup %s", input.Name)
 	s.Logger.Log(messageLog)
+
 	existingAccount, existingAccountError := s.AccountRepository.GetAccountByEmail(input.Email)
 
 	if existingAccountError != nil {

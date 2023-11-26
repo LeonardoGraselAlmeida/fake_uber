@@ -9,7 +9,7 @@ import (
 )
 
 type Account struct {
-	AccountId   string
+	AccountId   uuid.UUID
 	Name        string
 	Email       string
 	Cpf         string
@@ -18,7 +18,7 @@ type Account struct {
 	IsDriver    bool
 }
 
-func newAccount(accountId string, name string, email string, cpf string, carPlate string, isPassenger bool, isDriver bool) (*Account, error) {
+func newAccount(accountId uuid.UUID, name string, email string, cpf string, carPlate string, isPassenger bool, isDriver bool) (*Account, error) {
 	if isInvalidName(name) {
 		err := errors.New("invalid name")
 		return nil, err
@@ -53,7 +53,7 @@ func newAccount(accountId string, name string, email string, cpf string, carPlat
 }
 
 func CreateAccount(name string, email string, cpf string, carPlate string, isPassenger bool, isDriver bool) (*Account, error) {
-	accountId := uuid.New().String()
+	accountId := uuid.New()
 	account, err := newAccount(accountId, name, email, cpf, carPlate, isPassenger, isDriver)
 
 	if err != nil {
@@ -63,7 +63,7 @@ func CreateAccount(name string, email string, cpf string, carPlate string, isPas
 	return account, nil
 }
 
-func RestoreAccount(accountId string, name string, email string, cpf string, carPlate string, isPassenger bool, isDriver bool) (*Account, error) {
+func RestoreAccount(accountId uuid.UUID, name string, email string, cpf string, carPlate string, isPassenger bool, isDriver bool) (*Account, error) {
 	account, err := newAccount(accountId, name, email, cpf, carPlate, isPassenger, isDriver)
 
 	if err != nil {

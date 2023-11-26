@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 
+	"github.com/google/uuid"
 	"github.com/leonardograselalmeida/fake_uber/internal/domain/entity"
 )
 
@@ -21,7 +22,7 @@ func (repository *AccountRepository) SaveAccount(account *entity.Account) error 
 	return nil
 }
 
-func (repository *AccountRepository) GetAccountById(accountId string) (*entity.Account, error) {
+func (repository *AccountRepository) GetAccountById(accountId uuid.UUID) (*entity.Account, error) {
 	var result entity.Account
 	row := repository.Db.QueryRow("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where account_id = $1", accountId)
 
@@ -43,6 +44,10 @@ func (repository *AccountRepository) GetAccountByEmail(email string) (*entity.Ac
 	row := repository.Db.QueryRow("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where email = $1", email)
 
 	if err := row.Scan(&result.AccountId, &result.Name, &result.Email, &result.Cpf, &result.CarPlate, &result.IsPassenger, &result.IsDriver); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
 		return nil, err
 	}
 

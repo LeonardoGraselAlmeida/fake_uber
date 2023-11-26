@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/leonardograselalmeida/fake_uber/internal/application/logger"
 	"github.com/leonardograselalmeida/fake_uber/internal/application/repository"
 )
@@ -13,13 +14,13 @@ type GetRide struct {
 }
 
 type GetRideOutput struct {
-	RideId      string
+	RideId      uuid.UUID
 	Status      string
-	DriverId    string
-	PassengerId string
+	DriverId    uuid.UUID
+	PassengerId uuid.UUID
 }
 
-func (g *GetRide) Execute(rideId string) (*GetRideOutput, error) {
+func (g *GetRide) Execute(rideId uuid.UUID) (*GetRideOutput, error) {
 	g.Logger.Log("getRide")
 	ride, rideError := g.RideRepository.GetRideById(rideId)
 

@@ -47,7 +47,7 @@ func Test_Create_Driver_Account_Valid(t *testing.T) {
 }
 
 func Test_Restore_Passenger_Account_Valid(t *testing.T) {
-	expectAccountId := uuid.New().String()
+	expectAccountId := uuid.New()
 	expectName := "John Doe"
 	expectEmail := "john.doe@gmail.com"
 	expectCpf := "97456321558"
@@ -67,7 +67,7 @@ func Test_Restore_Passenger_Account_Valid(t *testing.T) {
 }
 
 func Test_Restore_Driver_Account_Valid(t *testing.T) {
-	expectAccountId := uuid.New().String()
+	expectAccountId := uuid.New()
 	expectName := "John Doe"
 	expectEmail := "john.doe@gmail.com"
 	expectCpf := "97456321558"
@@ -115,7 +115,7 @@ func Test_Create_Account_With_Cpf_Invalid(t *testing.T) {
 
 func Test_Create_Account_With_CarPlate_Invalid(t *testing.T) {
 	expectedErrorMessage := "invalid car plate"
-	expectAccountId := uuid.New().String()
+	expectAccountId := uuid.New()
 
 	_, err := entity.RestoreAccount(expectAccountId, "John Doe", "john.doe@gmail.com", "97456321558", "AAA", false, true)
 

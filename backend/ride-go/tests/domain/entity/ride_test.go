@@ -9,12 +9,12 @@ import (
 )
 
 func Test_Create_Ride_Valid(t *testing.T) {
-	expectPassengerId := uuid.New().String()
+	expectPassengerId := uuid.New()
 	expectFromLat := 10.000
 	expectFromLong := -10.000
 	expectToLat := 20.000
 	expectToLong := -20.000
-	expectDriverId := ""
+	expectDriverId := uuid.Nil
 	expectStatus := entity.StatusRequested
 
 	ride := entity.CreateRide(expectPassengerId, expectFromLat, expectFromLong, expectToLat, expectToLong)
@@ -32,12 +32,12 @@ func Test_Create_Ride_Valid(t *testing.T) {
 }
 
 func Test_Ride_When_Call_Accept_Should_Set_DriverId_Change_Status(t *testing.T) {
-	expectPassengerId := uuid.New().String()
+	expectPassengerId := uuid.New()
 	expectFromLat := 10.000
 	expectFromLong := -10.000
 	expectToLat := 20.000
 	expectToLong := -20.000
-	expectDriverId := uuid.New().String()
+	expectDriverId := uuid.New()
 	expectStatus := entity.StatusAccept
 
 	ride := entity.CreateRide(expectPassengerId, expectFromLat, expectFromLong, expectToLat, expectToLong)
@@ -48,7 +48,7 @@ func Test_Ride_When_Call_Accept_Should_Set_DriverId_Change_Status(t *testing.T) 
 }
 
 func Test_Ride_When_Call_Start_Should_Status(t *testing.T) {
-	expectPassengerId := uuid.New().String()
+	expectPassengerId := uuid.New()
 	expectFromLat := 10.000
 	expectFromLong := -10.000
 	expectToLat := 20.000

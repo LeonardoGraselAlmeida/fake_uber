@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/leonardograselalmeida/fake_uber/internal/application/logger"
 	"github.com/leonardograselalmeida/fake_uber/internal/application/repository"
 	"github.com/leonardograselalmeida/fake_uber/internal/domain/entity"
@@ -15,7 +16,7 @@ type RequestRide struct {
 }
 
 type RequestRideInput struct {
-	PassengerId string
+	PassengerId uuid.UUID
 	FromLat     float64
 	FromLong    float64
 	ToLat       float64
@@ -23,7 +24,7 @@ type RequestRideInput struct {
 }
 
 type RequestRideOutput struct {
-	RideId string
+	RideId uuid.UUID
 }
 
 func (r *RequestRide) Execute(input RequestRideInput) (*RequestRideOutput, error) {

@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/leonardograselalmeida/fake_uber/internal/application/repository"
 )
 
@@ -12,8 +13,8 @@ type AcceptRide struct {
 }
 
 type AcceptRideInput struct {
-	DriverId string
-	RideId   string
+	DriverId uuid.UUID
+	RideId   uuid.UUID
 }
 
 func (a *AcceptRide) Execute(input AcceptRideInput) error {

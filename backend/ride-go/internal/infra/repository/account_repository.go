@@ -27,6 +27,9 @@ func (repository *AccountRepository) GetAccountById(accountId uuid.UUID) (*entit
 	row := repository.Db.QueryRow("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where account_id = $1", accountId)
 
 	if err := row.Scan(&result.AccountId, &result.Name, &result.Email, &result.Cpf, &result.CarPlate, &result.IsPassenger, &result.IsDriver); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 

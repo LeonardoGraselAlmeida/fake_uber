@@ -1,10 +1,9 @@
-package entity_test
+package entity
 
 import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/leonardograselalmeida/fake_uber/internal/domain/entity"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,7 +14,7 @@ func Test_Create_Passenger_Account_Valid(t *testing.T) {
 	expectCarPlate := ""
 	expectIsPassenger := true
 	expectIsDriver := false
-	account, err := entity.CreateAccount(expectName, expectEmail, expectCpf, expectCarPlate, expectIsPassenger, expectIsDriver)
+	account, err := CreateAccount(expectName, expectEmail, expectCpf, expectCarPlate, expectIsPassenger, expectIsDriver)
 
 	assert.NoError(t, err)
 	assert.NotNil(t, account.AccountId)
@@ -34,7 +33,7 @@ func Test_Create_Driver_Account_Valid(t *testing.T) {
 	expectCarPlate := "AAA9999"
 	expectIsPassenger := false
 	expectIsDriver := true
-	account, err := entity.CreateAccount(expectName, expectEmail, expectCpf, expectCarPlate, expectIsPassenger, expectIsDriver)
+	account, err := CreateAccount(expectName, expectEmail, expectCpf, expectCarPlate, expectIsPassenger, expectIsDriver)
 
 	assert.NoError(t, err)
 	assert.NotNil(t, account.AccountId)
@@ -54,7 +53,7 @@ func Test_Restore_Passenger_Account_Valid(t *testing.T) {
 	expectCarPlate := ""
 	expectIsPassenger := true
 	expectIsDriver := false
-	account, err := entity.RestoreAccount(expectAccountId, expectName, expectEmail, expectCpf, expectCarPlate, expectIsPassenger, expectIsDriver)
+	account, err := RestoreAccount(expectAccountId, expectName, expectEmail, expectCpf, expectCarPlate, expectIsPassenger, expectIsDriver)
 
 	assert.NoError(t, err)
 	assert.EqualValues(t, account.AccountId, expectAccountId)
@@ -74,7 +73,7 @@ func Test_Restore_Driver_Account_Valid(t *testing.T) {
 	expectCarPlate := "AAA9999"
 	expectIsPassenger := false
 	expectIsDriver := true
-	account, err := entity.RestoreAccount(expectAccountId, expectName, expectEmail, expectCpf, expectCarPlate, expectIsPassenger, expectIsDriver)
+	account, err := RestoreAccount(expectAccountId, expectName, expectEmail, expectCpf, expectCarPlate, expectIsPassenger, expectIsDriver)
 
 	assert.NoError(t, err)
 	assert.EqualValues(t, account.AccountId, expectAccountId)
@@ -89,7 +88,7 @@ func Test_Restore_Driver_Account_Valid(t *testing.T) {
 func Test_Create_Account_With_Name_Invalid(t *testing.T) {
 	expectedErrorMessage := "invalid name"
 
-	_, err := entity.CreateAccount("John", "john.doe@gmail.com", "97456321558", "", true, false)
+	_, err := CreateAccount("John", "john.doe@gmail.com", "97456321558", "", true, false)
 
 	assert.Error(t, err)
 	assert.EqualError(t, err, expectedErrorMessage)
@@ -98,7 +97,7 @@ func Test_Create_Account_With_Name_Invalid(t *testing.T) {
 func Test_Create_Account_With_Email_Invalid(t *testing.T) {
 	expectedErrorMessage := "invalid email"
 
-	_, err := entity.CreateAccount("John Doe", "john@", "97456321558", "", true, false)
+	_, err := CreateAccount("John Doe", "john@", "97456321558", "", true, false)
 
 	assert.Error(t, err)
 	assert.EqualError(t, err, expectedErrorMessage)
@@ -107,7 +106,7 @@ func Test_Create_Account_With_Email_Invalid(t *testing.T) {
 func Test_Create_Account_With_Cpf_Invalid(t *testing.T) {
 	expectedErrorMessage := "invalid cpf"
 
-	_, err := entity.CreateAccount("John Doe", "john.doe@gmail.com", "97456321559", "", true, false)
+	_, err := CreateAccount("John Doe", "john.doe@gmail.com", "97456321559", "", true, false)
 
 	assert.Error(t, err)
 	assert.EqualError(t, err, expectedErrorMessage)
@@ -117,7 +116,7 @@ func Test_Create_Account_With_CarPlate_Invalid(t *testing.T) {
 	expectedErrorMessage := "invalid car plate"
 	expectAccountId := uuid.New()
 
-	_, err := entity.RestoreAccount(expectAccountId, "John Doe", "john.doe@gmail.com", "97456321558", "AAA", false, true)
+	_, err := RestoreAccount(expectAccountId, "John Doe", "john.doe@gmail.com", "97456321558", "AAA", false, true)
 
 	assert.Error(t, err)
 	assert.EqualError(t, err, expectedErrorMessage)

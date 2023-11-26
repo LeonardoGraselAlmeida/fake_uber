@@ -46,6 +46,9 @@ func (repository *RideRepository) GetRideById(rideId uuid.UUID) (*entity.Ride, e
 	row := repository.Db.QueryRow("select ride_id, passenger_id, driver_id, status, from_lat, from_long, to_lat, to_long, date FROM cccat14.ride where ride_id = $1", rideId)
 
 	if err := row.Scan(&result.RideId, &result.PassengerId, &result.DriverId, &result.Status, &result.FromLat, &result.FromLong, &result.ToLat, &result.ToLong, &result.Date); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -60,6 +63,9 @@ func (repository *RideRepository) GetActiveRideByPassengerId(passengerId uuid.UU
 		passengerId)
 
 	if err := row.Scan(&result.RideId, &result.PassengerId, &result.DriverId, &result.Status, &result.FromLat, &result.FromLong, &result.ToLat, &result.ToLong, &result.Date); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -82,6 +88,7 @@ func (repository *RideRepository) GetAllRide() ([]*entity.Ride, error) {
 		var ride entity.Ride
 		if err := rows.Scan(&ride.RideId, &ride.PassengerId, &ride.DriverId, &ride.Status, &ride.FromLat, &ride.FromLong, &ride.ToLat, &ride.ToLong, &ride.Date); err != nil {
 			log.Fatal("Erro ao ler os resultados: ", err)
+			return nil, err
 		}
 		rides = append(rides, &ride)
 	}

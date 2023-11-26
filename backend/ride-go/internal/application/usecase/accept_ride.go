@@ -24,6 +24,10 @@ func (a *AcceptRide) Execute(input AcceptRideInput) error {
 		return accountError
 	}
 
+	if account == nil {
+		return errors.New("driver not found")
+	}
+
 	if !account.IsDriver {
 		return errors.New("only drivers can accept a ride")
 	}
@@ -39,7 +43,11 @@ func (a *AcceptRide) Execute(input AcceptRideInput) error {
 	}
 
 	ride.Accept(input.DriverId)
-	a.RideRepository.UpdateRide(ride)
+	err := a.RideRepository.UpdateRide(ride)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

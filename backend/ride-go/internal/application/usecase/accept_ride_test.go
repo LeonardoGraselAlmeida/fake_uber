@@ -27,20 +27,19 @@ func Test_AcceptRide_When_Ride_And_Driver_Is_Valid(t *testing.T) {
 	}
 
 	defer db.Close()
-	accountRow := sqlmock.NewRows([]string{"account_id", "nome", "email", "cpf", "car_plate", "is_passenger", "is_driver"}).
+	accountRow := createAccountRow().
 		AddRow(driver.AccountId, driver.Name, driver.Email, driver.Cpf, driver.CarPlate, driver.IsPassenger, driver.IsDriver)
-	mock.ExpectQuery("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where account_id = $1").
-		WithArgs(driver.AccountId).
+
+	setQuerySelectToAccount(mock, driver.AccountId).
 		WillReturnRows(accountRow)
 
-	rideRow := sqlmock.NewRows([]string{"ride_id", "passenger_id", "driver_id", "status", "from_lat", "from_long", "to_lat", "to_long", "date"}).
+	rideRow := createRideRow().
 		AddRow(ride.RideId, ride.PassengerId, ride.DriverId, ride.Status, ride.FromLat, ride.FromLong, ride.ToLat, ride.ToLong, ride.Date)
-	mock.ExpectQuery("select ride_id, passenger_id, driver_id, status, from_lat, from_long, to_lat, to_long, date FROM cccat14.ride where ride_id = $1").
-		WithArgs(ride.RideId).
+
+	setQuerySelectToRide(mock, ride.RideId).
 		WillReturnRows(rideRow)
 
-	mock.ExpectExec("update cccat14.ride set status = $1, driver_id = $2 where ride_id = $3").
-		WithArgs(entity.StatusAccept, driver.AccountId, ride.RideId).
+	setQueryUpdateToRide(mock, entity.StatusAccept, driver.AccountId, ride.RideId).
 		WillReturnResult(sqlmock.NewResult(0, 1))
 
 	err := sut.Execute(acceptRideInput)
@@ -69,15 +68,14 @@ func Test_AcceptRide_When_Ride_Not_Exists_Sould_Return_Error(t *testing.T) {
 	}
 
 	defer db.Close()
-	accountRow := sqlmock.NewRows([]string{"account_id", "nome", "email", "cpf", "car_plate", "is_passenger", "is_driver"}).
+	accountRow := createAccountRow().
 		AddRow(driver.AccountId, driver.Name, driver.Email, driver.Cpf, driver.CarPlate, driver.IsPassenger, driver.IsDriver)
-	mock.ExpectQuery("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where account_id = $1").
-		WithArgs(driver.AccountId).
+
+	setQuerySelectToAccount(mock, driver.AccountId).
 		WillReturnRows(accountRow)
 
-	rideRow := sqlmock.NewRows([]string{"ride_id", "passenger_id", "driver_id", "status", "from_lat", "from_long", "to_lat", "to_long", "date"})
-	mock.ExpectQuery("select ride_id, passenger_id, driver_id, status, from_lat, from_long, to_lat, to_long, date FROM cccat14.ride where ride_id = $1").
-		WithArgs(ride.RideId).
+	rideRow := createRideRow()
+	setQuerySelectToRide(mock, ride.RideId).
 		WillReturnRows(rideRow)
 
 	err := sut.Execute(acceptRideInput)
@@ -102,9 +100,9 @@ func Test_AcceptRide_When_Driver_Not_Exists_Should_Return_Error(t *testing.T) {
 	}
 
 	defer db.Close()
-	accountRow := sqlmock.NewRows([]string{"account_id", "nome", "email", "cpf", "car_plate", "is_passenger", "is_driver"})
-	mock.ExpectQuery("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where account_id = $1").
-		WithArgs(driver.AccountId).
+	accountRow := createAccountRow()
+
+	setQuerySelectToAccount(mock, driver.AccountId).
 		WillReturnRows(accountRow)
 
 	err := sut.Execute(acceptRideInput)
@@ -129,8 +127,8 @@ func Test_AcceptRide_When_Get_Driver_Should_Return_Error_SqlQuery(t *testing.T) 
 	}
 
 	defer db.Close()
-	mock.ExpectQuery("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where account_id = $1").
-		WithArgs(driver.AccountId).
+
+	setQuerySelectToAccount(mock, driver.AccountId).
 		WillReturnError(errors.New("erro ao consultar account no banco de dados"))
 
 	err := sut.Execute(acceptRideInput)
@@ -155,10 +153,10 @@ func Test_AcceptRide_When_Account_Is_Passeger_Sould_Return_Error(t *testing.T) {
 	}
 
 	defer db.Close()
-	accountRow := sqlmock.NewRows([]string{"account_id", "nome", "email", "cpf", "car_plate", "is_passenger", "is_driver"}).
+	accountRow := createAccountRow().
 		AddRow(driver.AccountId, driver.Name, driver.Email, driver.Cpf, driver.CarPlate, driver.IsPassenger, driver.IsDriver)
-	mock.ExpectQuery("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where account_id = $1").
-		WithArgs(driver.AccountId).
+
+	setQuerySelectToAccount(mock, driver.AccountId).
 		WillReturnRows(accountRow)
 
 	err := sut.Execute(acceptRideInput)
@@ -183,14 +181,13 @@ func Test_AcceptRide_When_Get_Ride_Should_Return_Error_SqlQuery(t *testing.T) {
 	}
 
 	defer db.Close()
-	accountRow := sqlmock.NewRows([]string{"account_id", "nome", "email", "cpf", "car_plate", "is_passenger", "is_driver"}).
+	accountRow := createAccountRow().
 		AddRow(driver.AccountId, driver.Name, driver.Email, driver.Cpf, driver.CarPlate, driver.IsPassenger, driver.IsDriver)
-	mock.ExpectQuery("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where account_id = $1").
-		WithArgs(driver.AccountId).
+
+	setQuerySelectToAccount(mock, driver.AccountId).
 		WillReturnRows(accountRow)
 
-	mock.ExpectQuery("select ride_id, passenger_id, driver_id, status, from_lat, from_long, to_lat, to_long, date FROM cccat14.ride where ride_id = $1").
-		WithArgs(ride.RideId).
+	setQuerySelectToRide(mock, ride.RideId).
 		WillReturnError(errors.New("erro ao consultar ride no banco de dados"))
 
 	err := sut.Execute(acceptRideInput)
@@ -215,20 +212,19 @@ func Test_AcceptRide_When_UpdateRide_Should_Return_Sql_Error(t *testing.T) {
 	}
 
 	defer db.Close()
-	accountRow := sqlmock.NewRows([]string{"account_id", "nome", "email", "cpf", "car_plate", "is_passenger", "is_driver"}).
+	accountRow := createAccountRow().
 		AddRow(driver.AccountId, driver.Name, driver.Email, driver.Cpf, driver.CarPlate, driver.IsPassenger, driver.IsDriver)
-	mock.ExpectQuery("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where account_id = $1").
-		WithArgs(driver.AccountId).
+
+	setQuerySelectToAccount(mock, driver.AccountId).
 		WillReturnRows(accountRow)
 
-	rideRow := sqlmock.NewRows([]string{"ride_id", "passenger_id", "driver_id", "status", "from_lat", "from_long", "to_lat", "to_long", "date"}).
+	rideRow := createRideRow().
 		AddRow(ride.RideId, ride.PassengerId, ride.DriverId, ride.Status, ride.FromLat, ride.FromLong, ride.ToLat, ride.ToLong, ride.Date)
-	mock.ExpectQuery("select ride_id, passenger_id, driver_id, status, from_lat, from_long, to_lat, to_long, date FROM cccat14.ride where ride_id = $1").
-		WithArgs(ride.RideId).
+
+	setQuerySelectToRide(mock, ride.RideId).
 		WillReturnRows(rideRow)
 
-	mock.ExpectExec("update cccat14.ride set status = $1, driver_id = $2 where ride_id = $3").
-		WithArgs(entity.StatusAccept, driver.AccountId, ride.RideId).
+	setQueryUpdateToRide(mock, entity.StatusAccept, driver.AccountId, ride.RideId).
 		WillReturnError(errors.New("erro ao atualizar ride no banco de dados"))
 
 	err := sut.Execute(acceptRideInput)
@@ -246,4 +242,27 @@ func makeSUT(db *sql.DB) AcceptRide {
 
 	sut := AcceptRide{AccountRepository: &accountRepository, RideRepository: &rideRepository}
 	return sut
+}
+
+func createAccountRow() *sqlmock.Rows {
+	return sqlmock.NewRows([]string{"account_id", "nome", "email", "cpf", "car_plate", "is_passenger", "is_driver"})
+}
+
+func createRideRow() *sqlmock.Rows {
+	return sqlmock.NewRows([]string{"ride_id", "passenger_id", "driver_id", "status", "from_lat", "from_long", "to_lat", "to_long", "date"})
+}
+
+func setQuerySelectToAccount(mock sqlmock.Sqlmock, accountId uuid.UUID) *sqlmock.ExpectedQuery {
+	return mock.ExpectQuery("select account_id, name, email, cpf, car_plate, is_passenger, is_driver from cccat14.account where account_id = $1").
+		WithArgs(accountId)
+}
+
+func setQuerySelectToRide(mock sqlmock.Sqlmock, rideId uuid.UUID) *sqlmock.ExpectedQuery {
+	return mock.ExpectQuery("select ride_id, passenger_id, driver_id, status, from_lat, from_long, to_lat, to_long, date FROM cccat14.ride where ride_id = $1").
+		WithArgs(rideId)
+}
+
+func setQueryUpdateToRide(mock sqlmock.Sqlmock, status string, driverId uuid.UUID, rideId uuid.UUID) *sqlmock.ExpectedExec {
+	return mock.ExpectExec("update cccat14.ride set status = $1, driver_id = $2 where ride_id = $3").
+		WithArgs(status, driverId, rideId)
 }

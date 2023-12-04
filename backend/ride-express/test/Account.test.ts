@@ -1,5 +1,6 @@
 import Account from '../src/domain/Account';
 
+// sociable
 test('Deve criar uma conta', function () {
   const account = Account.create(
     'John Doe',
@@ -10,7 +11,7 @@ test('Deve criar uma conta', function () {
     false
   );
   expect(account.accountId).toBeDefined();
-  expect(account.name).toBe('John Doe');
-  expect(account.email).toBe('john.doe@gmail.com');
-  expect(account.cpf).toBe('97456321558');
+  expect(account.name.value).toBe('John Doe');
+  expect(account.email.value).toBe('john.doe@gmail.com');
+  expect(account.cpf.value).toBe('97456321558');
 });

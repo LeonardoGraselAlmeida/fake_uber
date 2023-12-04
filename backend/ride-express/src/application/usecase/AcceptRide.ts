@@ -1,24 +1,19 @@
-import type AccountDAO from '../repository/AccountRepository';
-import type RideDAO from '../repository/RideRepository';
+import type AccountRepository from '../repository/AccountRepository';
+import type RideRepository from '../repository/RideRepository';
 
 export default class AcceptRide {
   constructor(
-    private rideDAO: RideDAO,
-    private accountDAO: AccountDAO
+    private rideRepository: RideRepository,
+    private accountRepository: AccountRepository
   ) {}
 
-  async execute(input: AcceptRideInput): Promise<void> {
-    const account = await this.accountDAO.getById(input.driverId);
+  async execute(input: any) {
+    const account = await this.accountRepository.getById(input.driverId);
     if (account && !account.isDriver)
       throw new Error('Only drivers can accept a ride');
-    const ride = await this.rideDAO.getById(input.rideId);
+    const ride = await this.rideRepository.getById(input.rideId);
     if (!ride) throw new Error('Ride not found');
     ride.accept(input.driverId);
-    await this.rideDAO.update(ride);
+    await this.rideRepository.update(ride);
   }
 }
-
-export type AcceptRideInput = {
-  driverId: string;
-  rideId: string;
-};

@@ -1,9 +1,9 @@
 import AcceptRide from '../src/application/usecase/AcceptRide';
-import GetAccount from '../src/application/usecase/GetAccount';
 import GetRide from '../src/application/usecase/GetRide';
 import RequestRide from '../src/application/usecase/RequestRide';
 import Signup from '../src/application/usecase/Signup';
 import StartRide from '../src/application/usecase/StartRide';
+import UpdatePosition from '../src/application/usecase/UpdatePosition';
 import type DatabaseConnection from '../src/infra/database/DatabaseConnection';
 import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter';
 import LoggerConsole from '../src/infra/logger/LoggerConsole';
@@ -12,12 +12,12 @@ import PositionRepositoryDatabase from '../src/infra/repository/PositionReposito
 import RideRepositoryDatabase from '../src/infra/repository/RideRepositoryDatabase';
 
 let signup: Signup;
-let getAccount: GetAccount;
 let requestRide: RequestRide;
 let getRide: GetRide;
 let acceptRide: AcceptRide;
 let startRide: StartRide;
 let databaseConnection: DatabaseConnection;
+let updatePosition: UpdatePosition;
 
 beforeEach(() => {
   databaseConnection = new PgPromiseAdapter();
@@ -26,11 +26,11 @@ beforeEach(() => {
   const positionRepository = new PositionRepositoryDatabase(databaseConnection);
   const logger = new LoggerConsole();
   signup = new Signup(accountRepository, logger);
-  getAccount = new GetAccount(accountRepository);
   requestRide = new RequestRide(rideRepository, accountRepository, logger);
   getRide = new GetRide(rideRepository, positionRepository, logger);
   acceptRide = new AcceptRide(rideRepository, accountRepository);
   startRide = new StartRide(rideRepository);
+  updatePosition = new UpdatePosition(rideRepository, positionRepository);
 });
 
 test('Deve iniciar uma corrida', async function () {
@@ -68,8 +68,21 @@ test('Deve iniciar uma corrida', async function () {
     rideId: outputRequestRide.rideId
   };
   await startRide.execute(inputStartRide);
+  const inputUpdatePosition1 = {
+    rideId: outputRequestRide.rideId,
+    lat: -27.584905257808835,
+    long: -48.545022195325124
+  };
+  await updatePosition.execute(inputUpdatePosition1);
+  const inputUpdatePosition2 = {
+    rideId: outputRequestRide.rideId,
+    lat: -27.496887588317275,
+    long: -48.522234807851476
+  };
+  await updatePosition.execute(inputUpdatePosition2);
   const outputGetRide = await getRide.execute(outputRequestRide.rideId);
   expect(outputGetRide.status).toBe('in_progress');
+  expect(outputGetRide.distance).toBe(10);
 });
 
 afterEach(async () => {

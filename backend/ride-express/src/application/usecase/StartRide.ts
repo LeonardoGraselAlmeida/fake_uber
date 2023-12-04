@@ -1,16 +1,12 @@
-import type RideDAO from '../repository/RideRepository';
+import type RideRepository from '../repository/RideRepository';
 
 export default class StartRide {
-  constructor(private rideDAO: RideDAO) {}
+  constructor(private rideRepository: RideRepository) {}
 
-  async execute(input: StartRideInput): Promise<void> {
-    const ride = await this.rideDAO.getById(input.rideId);
+  async execute(input: any) {
+    const ride = await this.rideRepository.getById(input.rideId);
     if (!ride) throw new Error('Ride not found');
     ride.start();
-    await this.rideDAO.update(ride);
+    await this.rideRepository.update(ride);
   }
 }
-
-export type StartRideInput = {
-  rideId: string;
-};

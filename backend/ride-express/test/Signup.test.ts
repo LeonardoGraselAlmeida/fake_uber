@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import type Logger from '../src/application/logger/Logger';
-import type AccountDAO from '../src/application/repository/AccountRepository';
+import type AccountRepository from '../src/application/repository/AccountRepository';
 import GetAccount from '../src/application/usecase/GetAccount';
 import Signup from '../src/application/usecase/Signup';
 import Account from '../src/domain/Account';
@@ -15,10 +15,10 @@ let databaseConnection: DatabaseConnection;
 
 beforeEach(() => {
   databaseConnection = new PgPromiseAdapter();
-  const accountDAO = new AccountRepositoryDatabase(databaseConnection);
+  const accountRepository = new AccountRepositoryDatabase(databaseConnection);
   const logger = new LoggerConsole();
-  signup = new Signup(accountDAO, logger);
-  getAccount = new GetAccount(accountDAO);
+  signup = new Signup(accountRepository, logger);
+  getAccount = new GetAccount(accountRepository);
 });
 
 test('Deve criar uma conta para o passageiro', async function () {
@@ -38,10 +38,10 @@ test('Deve criar uma conta para o passageiro', async function () {
 });
 
 test('Deve criar uma conta para o passageiro com stub', async function () {
-  const stubAccountDAOSave = sinon
+  const stubAccountRepositorySave = sinon
     .stub(AccountRepositoryDatabase.prototype, 'save')
     .resolves();
-  const stubAccountDAOGetByEmail = sinon
+  const stubAccountRepositoryGetByEmail = sinon
     .stub(AccountRepositoryDatabase.prototype, 'getByEmail')
     .resolves(undefined);
   const inputSignup = {
@@ -53,7 +53,7 @@ test('Deve criar uma conta para o passageiro com stub', async function () {
   };
   const outputSignup = await signup.execute(inputSignup);
   expect(outputSignup.accountId).toBeDefined();
-  const stubAccountDAOGetById = sinon
+  const stubAccountRepositoryGetById = sinon
     .stub(AccountRepositoryDatabase.prototype, 'getById')
     .resolves(
       Account.create(
@@ -69,9 +69,9 @@ test('Deve criar uma conta para o passageiro com stub', async function () {
   // then
   expect(outputGetAccount?.name).toBe(inputSignup.name);
   expect(outputGetAccount?.email).toBe(inputSignup.email);
-  stubAccountDAOSave.restore();
-  stubAccountDAOGetByEmail.restore();
-  stubAccountDAOGetById.restore();
+  stubAccountRepositorySave.restore();
+  stubAccountRepositoryGetByEmail.restore();
+  stubAccountRepositoryGetById.restore();
 });
 
 test('Deve criar uma conta para o passageiro com mock', async function () {
@@ -204,27 +204,25 @@ test('Deve criar uma conta para o passageiro com fake', async function () {
     isPassenger: true,
     password: '123456'
   };
-  const accounts: Account[] = [];
-  const accountDAO: AccountDAO = {
-    async save(account: Account): Promise<void> {
+  const accounts: any = [];
+  const accountRepository: AccountRepository = {
+    async save(account: any): Promise<void> {
       accounts.push(account);
     },
-    async getById(accountId: string): Promise<Account | undefined> {
-      return accounts.find(
-        (account: Account) => account.accountId === accountId
-      );
+    async getById(accountId: string): Promise<any> {
+      return accounts.find((account: any) => account.accountId === accountId);
     },
-    async getByEmail(email: string): Promise<Account | undefined> {
-      return accounts.find((account: Account) => account.email === email);
+    async getByEmail(email: string): Promise<any> {
+      return accounts.find((account: any) => account.email === email);
     }
   };
   const logger: Logger = {
     log(message: string): void {
-      console.log(message);
+      // console.log(message);
     }
   };
-  const signup = new Signup(accountDAO, logger);
-  const getAccount = new GetAccount(accountDAO);
+  const signup = new Signup(accountRepository, logger);
+  const getAccount = new GetAccount(accountRepository);
   const outputSignup = await signup.execute(inputSignup);
   expect(outputSignup.accountId).toBeDefined();
   const outputGetAccount = await getAccount.execute(outputSignup.accountId);

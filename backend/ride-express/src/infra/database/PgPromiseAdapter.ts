@@ -1,16 +1,15 @@
-import type { IDatabase } from 'pg-promise';
 import pgp from 'pg-promise';
 import type DatabaseConnection from './DatabaseConnection';
 
 // Framework and Driver and Library
 export default class PgPromiseAdapter implements DatabaseConnection {
-  connection: IDatabase<undefined>;
+  connection: any;
 
   constructor() {
     this.connection = pgp()('postgres://postgres:123456@localhost:5432/app');
   }
 
-  query(statement: string, params: unknown): Promise<unknown> {
+  query(statement: string, params: any): Promise<any> {
     return this.connection.query(statement, params);
   }
 

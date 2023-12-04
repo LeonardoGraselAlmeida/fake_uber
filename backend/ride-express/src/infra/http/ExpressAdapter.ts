@@ -1,4 +1,3 @@
-import type { Request, Response } from 'express';
 import express from 'express';
 import type HttpServer from './HttpServer';
 
@@ -12,7 +11,7 @@ export default class ExpressAdapter implements HttpServer {
   }
 
   register(method: string, url: string, callback: Function): void {
-    this.app[method](url, async function (req: Request, res: Response) {
+    this.app[method](url, async function (req: any, res: any) {
       try {
         const output = await callback(req.params, req.body);
         res.json(output);
@@ -25,8 +24,6 @@ export default class ExpressAdapter implements HttpServer {
   }
 
   listen(port: number): void {
-    this.app.listen(port, () => {
-      console.log(`App listening on port ${port}`);
-    });
+    this.app.listen(port);
   }
 }

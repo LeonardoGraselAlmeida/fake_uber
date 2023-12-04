@@ -1,22 +1,22 @@
 import Ride from '../../domain/Ride';
 import type Logger from '../logger/Logger';
-import type AccountDAO from '../repository/AccountRepository';
-import type RideDAO from '../repository/RideRepository';
+import type AccountRepository from '../repository/AccountRepository';
+import type RideRepository from '../repository/RideRepository';
 
 export default class RequestRide {
   constructor(
-    private rideDAO: RideDAO,
-    private accountDAO: AccountDAO,
+    private rideRepository: RideRepository,
+    private accountRepository: AccountRepository,
     private logger: Logger
   ) {}
 
   async execute(input: Input): Promise<Output> {
     this.logger.log(`requestRide`);
-    const account = await this.accountDAO.getById(input.passengerId);
+    const account = await this.accountRepository.getById(input.passengerId);
     if (!account) throw new Error('Account does not exist');
     if (!account.isPassenger)
       throw new Error('Only passengers can request a ride');
-    const activeRide = await this.rideDAO.getActiveRideByPassengerId(
+    const activeRide = await this.rideRepository.getActiveRideByPassengerId(
       input.passengerId
     );
     if (activeRide) throw new Error('Passenger has an active ride');
@@ -27,7 +27,7 @@ export default class RequestRide {
       input.toLat,
       input.toLong
     );
-    await this.rideDAO.save(ride);
+    await this.rideRepository.save(ride);
     return {
       rideId: ride.rideId
     };

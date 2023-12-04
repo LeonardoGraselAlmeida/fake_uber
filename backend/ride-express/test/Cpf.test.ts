@@ -1,16 +1,15 @@
-import { validateCpf } from '../src/domain/CpfValidator';
+import Cpf from '../src/domain/Cpf';
 
 test.each(['97456321558', '71428793860', '87748248800'])(
   'Deve testar cpfs válidos',
   function (cpf: string) {
-    expect(validateCpf(cpf)).toBe(true);
+    expect(new Cpf(cpf)).toBeDefined();
   }
 );
 
 test.each(['', undefined, null, '11111111111', '111', '11111111111111'])(
   'Deve testar cpfs inválidos',
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function (cpf: any) {
-    expect(validateCpf(cpf)).toBe(false);
+    expect(() => new Cpf(cpf)).toThrow(new Error('Invalid cpf'));
   }
 );

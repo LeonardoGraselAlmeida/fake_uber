@@ -16,7 +16,7 @@ import (
 
 func Test_AcceptRide_When_Ride_And_Driver_Is_Valid(t *testing.T) {
 	db, mock := database.NewMockDatabase()
-	sut := makeSUT(db)
+	sut := makeAcceptRide(db)
 	passengerId := uuid.New()
 	driver, _ := entity.CreateAccount("John Driver", "john.driver@gmail.com", "14181694046", "AAA9999", false, true)
 	ride := entity.CreateRide(passengerId, 10.000, -10.000, 20.000, -20.000)
@@ -34,7 +34,7 @@ func Test_AcceptRide_When_Ride_And_Driver_Is_Valid(t *testing.T) {
 		WillReturnRows(accountRow)
 
 	rideRow := createRideRow().
-		AddRow(ride.RideId, ride.PassengerId, ride.DriverId, ride.Status, ride.FromLat, ride.FromLong, ride.ToLat, ride.ToLong, ride.Date)
+		AddRow(ride.RideId, ride.PassengerId, ride.GetDriverId(), ride.GetStatus(), ride.FromLat, ride.FromLong, ride.ToLat, ride.ToLong, ride.Date)
 
 	setQuerySelectToRide(mock, ride.RideId).
 		WillReturnRows(rideRow)
@@ -57,7 +57,7 @@ func Test_AcceptRide_When_Ride_And_Driver_Is_Valid(t *testing.T) {
 
 func Test_AcceptRide_When_Ride_Not_Exists_Sould_Return_Error(t *testing.T) {
 	db, mock := database.NewMockDatabase()
-	sut := makeSUT(db)
+	sut := makeAcceptRide(db)
 	passengerId := uuid.New()
 	driver, _ := entity.CreateAccount("John Driver", "john.driver@gmail.com", "14181694046", "AAA9999", false, true)
 	ride := entity.CreateRide(passengerId, 10.000, -10.000, 20.000, -20.000)
@@ -89,7 +89,7 @@ func Test_AcceptRide_When_Ride_Not_Exists_Sould_Return_Error(t *testing.T) {
 
 func Test_AcceptRide_When_Driver_Not_Exists_Should_Return_Error(t *testing.T) {
 	db, mock := database.NewMockDatabase()
-	sut := makeSUT(db)
+	sut := makeAcceptRide(db)
 	passengerId := uuid.New()
 	driver, _ := entity.CreateAccount("John Driver", "john.driver@gmail.com", "14181694046", "AAA9999", false, true)
 	ride := entity.CreateRide(passengerId, 10.000, -10.000, 20.000, -20.000)
@@ -116,7 +116,7 @@ func Test_AcceptRide_When_Driver_Not_Exists_Should_Return_Error(t *testing.T) {
 
 func Test_AcceptRide_When_Get_Driver_Should_Return_Error_SqlQuery(t *testing.T) {
 	db, mock := database.NewMockDatabase()
-	sut := makeSUT(db)
+	sut := makeAcceptRide(db)
 	passengerId := uuid.New()
 	driver, _ := entity.CreateAccount("John Driver", "john.driver@gmail.com", "14181694046", "AAA9999", false, true)
 	ride := entity.CreateRide(passengerId, 10.000, -10.000, 20.000, -20.000)
@@ -142,7 +142,7 @@ func Test_AcceptRide_When_Get_Driver_Should_Return_Error_SqlQuery(t *testing.T) 
 
 func Test_AcceptRide_When_Account_Is_Passeger_Sould_Return_Error(t *testing.T) {
 	db, mock := database.NewMockDatabase()
-	sut := makeSUT(db)
+	sut := makeAcceptRide(db)
 	passengerId := uuid.New()
 	driver, _ := entity.CreateAccount("John Driver", "john.driver@gmail.com", "14181694046", "", true, false)
 	ride := entity.CreateRide(passengerId, 10.000, -10.000, 20.000, -20.000)
@@ -170,7 +170,7 @@ func Test_AcceptRide_When_Account_Is_Passeger_Sould_Return_Error(t *testing.T) {
 
 func Test_AcceptRide_When_Get_Ride_Should_Return_Error_SqlQuery(t *testing.T) {
 	db, mock := database.NewMockDatabase()
-	sut := makeSUT(db)
+	sut := makeAcceptRide(db)
 	passengerId := uuid.New()
 	driver, _ := entity.CreateAccount("John Driver", "john.driver@gmail.com", "14181694046", "AAA9999", false, true)
 	ride := entity.CreateRide(passengerId, 10.000, -10.000, 20.000, -20.000)
@@ -201,7 +201,7 @@ func Test_AcceptRide_When_Get_Ride_Should_Return_Error_SqlQuery(t *testing.T) {
 
 func Test_AcceptRide_When_UpdateRide_Should_Return_Sql_Error(t *testing.T) {
 	db, mock := database.NewMockDatabase()
-	sut := makeSUT(db)
+	sut := makeAcceptRide(db)
 	passengerId := uuid.New()
 	driver, _ := entity.CreateAccount("John Driver", "john.driver@gmail.com", "14181694046", "AAA9999", false, true)
 	ride := entity.CreateRide(passengerId, 10.000, -10.000, 20.000, -20.000)
@@ -219,7 +219,7 @@ func Test_AcceptRide_When_UpdateRide_Should_Return_Sql_Error(t *testing.T) {
 		WillReturnRows(accountRow)
 
 	rideRow := createRideRow().
-		AddRow(ride.RideId, ride.PassengerId, ride.DriverId, ride.Status, ride.FromLat, ride.FromLong, ride.ToLat, ride.ToLong, ride.Date)
+		AddRow(ride.RideId, ride.PassengerId, ride.GetDriverId(), ride.GetStatus(), ride.FromLat, ride.FromLong, ride.ToLat, ride.ToLong, ride.Date)
 
 	setQuerySelectToRide(mock, ride.RideId).
 		WillReturnRows(rideRow)
@@ -236,7 +236,7 @@ func Test_AcceptRide_When_UpdateRide_Should_Return_Sql_Error(t *testing.T) {
 	assert.EqualError(t, err, "erro ao atualizar ride no banco de dados")
 }
 
-func makeSUT(db *sql.DB) AcceptRide {
+func makeAcceptRide(db *sql.DB) AcceptRide {
 	accountRepository := repository.AccountRepository{Db: db}
 	rideRepository := repository.RideRepository{Db: db}
 

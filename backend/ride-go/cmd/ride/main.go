@@ -110,6 +110,6 @@ func testGetAllRide() {
 	}
 
 	for _, ride := range rides {
-		println("Ride: ", ride.RideId.String(), ride.DriverId.String(), ride.Date.String())
+		println("Ride: ", ride.RideId.String(), ride.GetDriverId().String(), ride.Date.String())
 	}
 }

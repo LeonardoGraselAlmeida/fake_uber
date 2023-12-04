@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"log"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/leonardograselalmeida/fake_uber/internal/domain/entity"
@@ -10,6 +11,18 @@ import (
 
 type RideRepository struct {
 	Db *sql.DB
+}
+
+type outputRideRepository struct {
+	RideId      uuid.UUID
+	PassengerId uuid.UUID
+	DriverId    uuid.UUID
+	Status      string
+	Date        time.Time
+	FromLat     float64
+	FromLong    float64
+	ToLat       float64
+	ToLong      float64
 }
 
 func (repository *RideRepository) SaveRide(ride *entity.Ride) error {
@@ -20,7 +33,7 @@ func (repository *RideRepository) SaveRide(ride *entity.Ride) error {
 		ride.FromLong,
 		ride.ToLat,
 		ride.ToLong,
-		ride.Status,
+		ride.GetStatus(),
 		ride.Date)
 
 	if err != nil {
@@ -32,7 +45,7 @@ func (repository *RideRepository) SaveRide(ride *entity.Ride) error {
 
 func (repository *RideRepository) UpdateRide(ride *entity.Ride) error {
 	_, err := repository.Db.Exec("update cccat14.ride set status = $1, driver_id = $2 where ride_id = $3",
-		ride.Status, ride.DriverId, ride.RideId)
+		ride.GetStatus(), ride.GetDriverId(), ride.RideId)
 
 	if err != nil {
 		return err
@@ -42,7 +55,7 @@ func (repository *RideRepository) UpdateRide(ride *entity.Ride) error {
 }
 
 func (repository *RideRepository) GetRideById(rideId uuid.UUID) (*entity.Ride, error) {
-	var result entity.Ride
+	var result outputRideRepository
 	row := repository.Db.QueryRow("select ride_id, passenger_id, driver_id, status, from_lat, from_long, to_lat, to_long, date FROM cccat14.ride where ride_id = $1", rideId)
 
 	if err := row.Scan(&result.RideId, &result.PassengerId, &result.DriverId, &result.Status, &result.FromLat, &result.FromLong, &result.ToLat, &result.ToLong, &result.Date); err != nil {
@@ -58,7 +71,7 @@ func (repository *RideRepository) GetRideById(rideId uuid.UUID) (*entity.Ride, e
 }
 
 func (repository *RideRepository) GetActiveRideByPassengerId(passengerId uuid.UUID) (*entity.Ride, error) {
-	var result entity.Ride
+	var result outputRideRepository
 	row := repository.Db.QueryRow("select ride_id, passenger_id, driver_id, status, from_lat, from_long, to_lat, to_long, date FROM cccat14.ride where passenger_id = $1 and status in ('requested', 'accepted', 'in_progress')",
 		passengerId)
 
@@ -85,12 +98,13 @@ func (repository *RideRepository) GetAllRide() ([]*entity.Ride, error) {
 
 	var rides []*entity.Ride
 	for rows.Next() {
-		var ride entity.Ride
-		if err := rows.Scan(&ride.RideId, &ride.PassengerId, &ride.DriverId, &ride.Status, &ride.FromLat, &ride.FromLong, &ride.ToLat, &ride.ToLong, &ride.Date); err != nil {
+		var output outputRideRepository
+		if err := rows.Scan(&output.RideId, &output.PassengerId, &output.DriverId, &output.Status, &output.FromLat, &output.FromLong, &output.ToLat, &output.ToLong, &output.Date); err != nil {
 			log.Fatal("Erro ao ler os resultados: ", err)
 			return nil, err
 		}
-		rides = append(rides, &ride)
+		ride := entity.RestoreRide(output.RideId, output.PassengerId, output.DriverId, output.Status, output.Date, output.FromLat, output.FromLong, output.ToLat, output.ToLong)
+		rides = append(rides, ride)
 	}
 
 	if err := rows.Err(); err != nil {

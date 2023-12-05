@@ -7,7 +7,7 @@ export default class AcceptRide {
     private accountRepository: AccountRepository
   ) {}
 
-  async execute(input: any) {
+  async execute(input: Input) {
     const account = await this.accountRepository.getById(input.driverId);
     if (account && !account.isDriver)
       throw new Error('Only drivers can accept a ride');
@@ -17,3 +17,8 @@ export default class AcceptRide {
     await this.rideRepository.update(ride);
   }
 }
+
+type Input = {
+  driverId: string;
+  rideId: string;
+};

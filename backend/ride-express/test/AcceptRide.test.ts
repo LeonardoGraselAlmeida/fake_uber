@@ -1,5 +1,4 @@
 import AcceptRide from '../src/application/usecase/AcceptRide';
-import GetAccount from '../src/application/usecase/GetAccount';
 import GetRide from '../src/application/usecase/GetRide';
 import RequestRide from '../src/application/usecase/RequestRide';
 import Signup from '../src/application/usecase/Signup';
@@ -11,7 +10,6 @@ import PositionRepositoryDatabase from '../src/infra/repository/PositionReposito
 import RideRepositoryDatabase from '../src/infra/repository/RideRepositoryDatabase';
 
 let signup: Signup;
-let getAccount: GetAccount;
 let requestRide: RequestRide;
 let getRide: GetRide;
 let acceptRide: AcceptRide;
@@ -24,7 +22,6 @@ beforeEach(() => {
   const positionRepository = new PositionRepositoryDatabase(databaseConnection);
   const logger = new LoggerConsole();
   signup = new Signup(accountRepository, logger);
-  getAccount = new GetAccount(accountRepository);
   requestRide = new RequestRide(rideRepository, accountRepository, logger);
   getRide = new GetRide(rideRepository, positionRepository, logger);
   acceptRide = new AcceptRide(rideRepository, accountRepository);

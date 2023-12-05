@@ -1,28 +1,32 @@
 import type GetAccount from '../../application/usecase/GetAccount';
 import type Signup from '../../application/usecase/Signup';
+import { inject } from '../di/Registry';
 import type HttpServer from '../http/HttpServer';
 
 // Interface Adapter
 export default class MainController {
-  constructor(
-    readonly httpServer: HttpServer,
-    signup: Signup,
-    getAccount: GetAccount
-  ) {
-    httpServer.register(
+  @inject('httpServer')
+  httpServer?: HttpServer;
+  @inject('signup')
+  signup?: Signup;
+  @inject('getAccount')
+  getAccount?: GetAccount;
+
+  constructor() {
+    this.httpServer?.register(
       'post',
       '/signup',
-      async function (params: any, body: any) {
-        const output = await signup.execute(body);
+      async (params: any, body: any) => {
+        const output = await this.signup?.execute(body);
         return output;
       }
     );
 
-    httpServer.register(
+    this.httpServer?.register(
       'get',
       '/accounts/:accountId',
-      async function (params: any, body: any) {
-        const output = await getAccount.execute(params.accountId);
+      async (params: any, body: any) => {
+        const output = await this.getAccount?.execute(params.accountId);
         return output;
       }
     );

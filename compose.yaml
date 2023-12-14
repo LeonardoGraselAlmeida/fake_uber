@@ -1,23 +1,12 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  ride_api_express:
-    container_name: ride_api_express
-    restart: always
-    build: ./backend/ride-express
-    ports:
-      - ${API_PORT}:${API_PORT}
-    depends_on:
-      - db
-    volumes:
-      - .:/usr/src/app
-
   db:
     container_name: postgres
     image: postgres
     restart: always
     ports:
-      - '5432:${DB_PORT}'
+      - "5432:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
@@ -29,3 +18,74 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: "rabbitmq:3.11.27-management"
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+
+  account_api:
+    container_name: account_api
+    restart: always
+    build: ./backend/account
+    env_file:
+      - ./backend/account/.env.docker
+    ports:
+      - ${ACCOUNT_API_PORT}:${ACCOUNT_API_PORT}
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    volumes:
+      - .:/usr/src/app
+
+  payment_api:
+    container_name: payment_api
+    restart: always
+    build: ./backend/payment
+    env_file:
+      - ./backend/payment/.env.docker
+    ports:
+      - ${PAYMENT_API_PORT}:${PAYMENT_API_PORT}
+    links:
+      - rabbitmq
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      rabbitmq:
+        condition: service_healthy
+        restart: true
+    volumes:
+      - .:/usr/src/app
+
+  ride_api:
+    container_name: ride_api
+    restart: always
+    build: ./backend/ride
+    env_file:
+      - ./backend/ride/.env.docker
+    ports:
+      - ${RIDE_API_PORT}:${RIDE_API_PORT}
+    links:
+      - rabbitmq
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      rabbitmq:
+        condition: service_healthy
+        restart: true
+    volumes:
+      - .:/usr/src/app

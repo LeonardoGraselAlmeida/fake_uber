@@ -10,7 +10,7 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: “pg_isready”
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 1s
       timeout: 5s
       retries: 10
@@ -37,7 +37,7 @@ services:
 
   account_api:
     container_name: account_api
-    restart: always
+    restart: on-failure
     build: ./backend/account
     env_file:
       - ./backend/account/.env.docker
@@ -46,13 +46,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
-        restart: true
     volumes:
       - .:/usr/src/app
 
   payment_api:
     container_name: payment_api
-    restart: always
+    restart: on-failure
     build: ./backend/payment
     env_file:
       - ./backend/payment/.env.docker
@@ -63,16 +62,14 @@ services:
     depends_on:
       db:
         condition: service_healthy
-        restart: true
       rabbitmq:
         condition: service_healthy
-        restart: true
     volumes:
       - .:/usr/src/app
 
   ride_api:
     container_name: ride_api
-    restart: always
+    restart: on-failure
     build: ./backend/ride
     env_file:
       - ./backend/ride/.env.docker
@@ -83,9 +80,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-        restart: true
       rabbitmq:
         condition: service_healthy
-        restart: true
     volumes:
       - .:/usr/src/app
